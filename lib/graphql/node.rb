@@ -54,7 +54,8 @@ class GraphQL::Node
         json[key_name] = cursor
       else
         field = get_field(syntax_field)
-        json[key_name] = field.as_result
+        result = field.as_result
+        json[key_name] = result unless result.blank?
       end
     end
     json

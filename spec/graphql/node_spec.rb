@@ -16,7 +16,7 @@ describe GraphQL::Node do
 
     it 'has fields' do
       assert_equal 8, result["post"]["fields"]["count"]
-      assert_equal({ "name" => "title", "description" => nil}, title_field)
+      assert_equal({ "name" => "title"}, title_field)
     end
 
     describe 'getting the __type__ field' do

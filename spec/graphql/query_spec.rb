@@ -204,7 +204,7 @@ describe GraphQL::Query do
       end
 
       it 'blows_up' do # what _should_ this do?
-        assert_raises(RuntimeError) { result }
+        assert_nil result['post']
       end
     end
   end
