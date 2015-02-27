@@ -45,7 +45,8 @@ class GraphQL::Node
   # Looks up {#syntax_fields} against this node and returns the results
   def as_result
     json = {}
-    syntax_fields.each do |syntax_field|
+    fields = syntax_fields.count > 0 ? syntax_fields : default_fields
+    fields.each do |syntax_field|
       key_name = syntax_field.alias_name || syntax_field.identifier
       if key_name == 'node'
         clone_node = self.class.new(target, fields: syntax_field.fields, query: query)
@@ -64,8 +65,7 @@ class GraphQL::Node
   def context
     query.context
   end
-
-
+  
   class << self
     # Registers this node in {GraphQL::SCHEMA}
     def inherited(child_class)
@@ -149,6 +149,16 @@ class GraphQL::Node
   end
 
   private
+  
+  def default_fields
+    return @default_fields if @default_fields.present?
+    fields = []
+    self.class.all_fields.each do |identifier, klass|
+      next if klass == GraphQL::Node::TypeField
+      fields << GraphQL::Syntax::Field.new(identifier: identifier)
+    end
+    @default_fields = fields
+  end
 
   def get_field(syntax_field)
     field_class = self.class.all_fields[syntax_field.identifier]
